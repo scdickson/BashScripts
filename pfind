@@ -1,0 +1,42 @@
+#!/usr/bin/python
+
+#Sam Dickson
+#24 July 2014
+#Python script to scrape and quickly search packages.ubuntu.com
+
+import urllib2
+import sys
+
+if len(sys.argv) != 3:
+	print "Syntax: python pfind.py KEYWORD SUITE"
+	print "e.g. python pfind.py sdr trusty"
+	sys.exit()
+
+url='http://packages.ubuntu.com/search?keywords=' + sys.argv[1] + '&searchon=names&suite=' + sys.argv[2] + '&section=all'
+
+usock=urllib2.urlopen(url)
+data=usock.read().split("\n");
+count=0
+flag=0
+arrow=u"\u21B3"
+
+for line in range(len(data)):
+	if flag==0:
+		if "<h3>" in data[line]:
+			stop=len(data[line])-(len('<h3>')+1);
+			start=len('<h3>')+2;
+			print data[line][start:stop]
+			count += 1
+		elif "<li class=\"" + sys.argv[2] + "\"" in data[line]:
+			flag=1
+	else:
+		flag=0
+		start=0
+
+		try:
+			stop=data[line].index('[')-1
+			print arrow.encode('utf-8'),data[line][start:stop]
+		except ValueError:
+			print arrow.encode('utf-8') + data[line][start:]
+
+print `count`, "packages found."

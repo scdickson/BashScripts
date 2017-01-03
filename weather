@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+import sys
+import urllib2
+
+try:
+	url="http://www.wunderground.com/cgi-bin/findweather/hdfForecast?query=" + sys.argv[1]
+except:
+	print "Usage: 'python weather.py ZIPCODE'"
+	sys.exit();
+
+usock=urllib2.urlopen(url)
+data=usock.read().split("\n")
+degree=u" \u00B0"
+
+for line in range(len(data)):
+	if "update-time" in data[line]:
+		print "Last updated: " + data[line][data[line].index(">")+1:data[line].index("</span>")]
+	elif "curCond" in data[line]:
+		print "Currently: " + data[line][data[line].index("<span class=\"wx-value\">")+len("<span class=\"wx-value\">"):data[line].index("</span>")]
+	elif "data-variable=\"temperature\"" in data[line]:
+		print "Temperature: " + data[line+1][data[line+1].index("<span class=\"wx-value\">")+len("<span class=\"wx-value\">"):data[line+1].index("</span>")] + degree.encode('utf-8') + "F"
+	elif "data-variable=\"humidity\"" in data[line]:
+		print "Humidity: " + data[line+1][data[line+1].index("<span class=\"wx-value\">")+len("<span class=\"wx-value\">"):data[line+1].index("</span>")] + "%"
+		break;

@@ -1,0 +1,24 @@
+#!/usr/bin/python
+
+from twilio import TwilioRestException
+from twilio.rest import TwilioRestClient
+import sys
+
+if len(sys.argv) != 3:
+	print("Usage: sms.py +01234567890  'message body'")
+	sys.exit(1)
+
+to_num = sys.argv[1]
+msg_body = sys.argv[2]
+
+account_sid = "YOUR_TWILIO_SID_HERE"
+auth_token = "YOUR_TWILIO_AUTH_TOKEN_HERE"
+twilio_num = "+YOUR_TWILIO_NUMBER_HERE"
+
+client = TwilioRestClient(account_sid, auth_token);
+
+try:
+	message = client.messages.create(body=msg_body,to=to_num,from_=twilio_num)
+	print("Message sent.")
+except TwilioRestException as e:
+	print(e)

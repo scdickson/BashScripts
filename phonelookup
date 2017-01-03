@@ -1,0 +1,62 @@
+#!/usr/bin/python
+
+import sys
+import pycurl
+import json
+import re
+from StringIO import StringIO
+
+if len(sys.argv) != 2 or len(sys.argv[1]) != 12 or '-' in sys.argv[1] or not sys.argv[1][0] == '+':
+    print "Usage: phonelookup +01234567890"
+    sys.exit(1)
+
+area_code = sys.argv[1][2:5]
+account_sid = "YOUR_TWILIO_SID_HERE"
+auth_token = "YOUR_TWILIO_AUTH_TOKEN_HERE"
+storage = StringIO()
+curl_url = 'https://lookups.twilio.com/v1/PhoneNumbers/' + sys.argv[1] + '?Type=carrier&Type=caller-name'
+area_code_url = 'http://www.bennetyee.org/ucsd-pages/area.html'
+
+c = pycurl.Curl()
+c.setopt(c.URL, area_code_url)
+c.setopt(c.WRITEDATA, storage)
+c.perform()
+c.close()
+content = storage.getvalue().split("\n")
+print "GEOGRAPHIC LOCATION:"
+for i in xrange(0, len(content)):
+    if area_code in content[i]:
+        line = content[i]
+        print re.sub('<[^<]+?>', ' ', line).strip()
+print ""
+
+storage = StringIO()
+c = pycurl.Curl()
+c.setopt(c.URL, curl_url)
+c.setopt(pycurl.USERPWD, account_sid + ':' + auth_token)
+c.setopt(c.WRITEFUNCTION, storage.write)
+c.perform()
+c.close()
+content = storage.getvalue()
+
+data = json.loads(content)
+
+if(data["caller_name"]["caller_name"]):
+    print "Caller name: " + data["caller_name"]["caller_name"]
+else:
+    print "Caller name: UNKNOWN"
+
+if(data["caller_name"]["caller_type"]):
+    print "Caller type: " + data["caller_name"]["caller_type"]
+else:
+    print "Caller type: UNKNOWN"
+
+if(data["carrier"]["name"]):
+    print "Carrier name: " + data["carrier"]["name"]
+else:
+    print "Carrier name: UNKNOWN"
+
+if(data["carrier"]["type"]):
+    print "Number type: " + data["carrier"]["type"]
+else:
+    print "Number type: UNKNOWN"
