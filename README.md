@@ -13,6 +13,10 @@ A collection of various useful scripts to add to your PATH. Some scripts from Gi
 >It's like `cat` but for images.  
 >See [https://github.com/eddieantonio/imgcat](https://github.com/eddieantonio/imgcat)
 
+##### my_ip
+>Displays your current external IP address.
+>Usage: `my_ip`
+
 ##### pfind
 >Searches Ubuntu package manager.
 >Usage: `pfind rtl-sdr trusty`
@@ -28,6 +32,10 @@ A collection of various useful scripts to add to your PATH. Some scripts from Gi
 ##### ssh-audit
 >A tool for ssh server auditing.
 >See [https://github.com/arthepsy/ssh-audit](https://github.com/arthepsy/ssh-audit)
+
+##### trufflehog
+>Searches through git repositories for high entropy strings, digging deep into commit history and branches. This is effective at finding secrets accidentally committed that contain high entropy.
+>See [https://github.com/dxa4481/truffleHog](https://github.com/dxa4481/truffleHog)
 
 ##### weather
 >Returns a simple weather report for a given zip code.
